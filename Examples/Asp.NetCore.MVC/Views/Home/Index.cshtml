@@ -1,4 +1,4 @@
-﻿@model Binance.Net.Interfaces.IBinanceStreamKlineData
+﻿@model Asp.Net.Controllers.Coin
 
 @{
     ViewData["Title"] = "Test";
@@ -8,8 +8,16 @@
     
     <div>
         <br />
-        The last price of the BTCUSDT symbol is @(Model?.Data.ClosePrice.ToString() ?? "not known yet")
+        The last price of the @(Model?.Name) symbol is @(Model?.Price.ToString() ?? "not known yet")
         <br />
         (refresh the page to get the latest price)
+        
+         <br />
+         <h2>Veja também essas COINS</h2>
+          
+        <p><a href="/?coiname=BNBUSDT">BNBUSDT</a></p>
+        <p><a href="/?coiname=ADAUSDT">ADAUSDT</a></p>         
+                        
     </div>
+
 </div>

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using Asp.Net.Models;
 using Binance.Net.Interfaces;
 using Binance.Net.Interfaces.Clients;
@@ -7,6 +8,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Asp.Net.Controllers
 {
+
+    public class Coin
+    {
+        public decimal Price { get; set; }
+        public string Name { get; set; }
+    }
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -20,9 +28,19 @@ namespace Asp.Net.Controllers
             _dataProvider = dataProvider;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string coiname)
         {
-            return View(_dataProvider.LastKline);
+            if (string.IsNullOrEmpty(coiname))
+            {
+                coiname = "BTCUSDT";
+            }
+
+            decimal price = await this._dataProvider.GetPrice(coiname);
+            var coin = new Coin();
+            coin.Name = coiname;
+            coin.Price = price;
+
+            return View(coin);
         }
 
 

@@ -12,6 +12,7 @@ namespace Asp.Net
         IBinanceStreamKlineData LastKline { get; }
         Action<IBinanceStreamKlineData> OnKlineData { get; set; }
 
+        Task<decimal> GetPrice(string coiname);
         Task Start();
         Task Stop();
     }
@@ -41,6 +42,20 @@ namespace Asp.Net
             if (subResult.Success)            
                 _subscription = subResult.Data;            
         }
+
+        public async Task<decimal> GetPrice(string coiname)
+        {
+            var subResult = await _socketClient.SpotStreams.SubscribeToKlineUpdatesAsync(coiname, KlineInterval.FifteenMinutes, data =>
+            {
+                LastKline = data.Data;
+                OnKlineData?.Invoke(data.Data);
+            });
+            if (subResult.Success)
+                _subscription = subResult.Data;
+
+            return LastKline.Data.ClosePrice;
+        }
+
 
         public async Task Stop()
         {
